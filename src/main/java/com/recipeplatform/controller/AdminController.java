@@ -30,27 +30,27 @@ public class AdminController {
         adminService.deleteUserById(id, currentUser);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse(ResponseMessage.DELETE_USER.getMessage()));
     }
+
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/recipes/{id}")
-
-    public ResponseEntity<ApiResponse> deleteRecipe(@PathVariable Long id,@AuthenticationPrincipal User currentUser
-    ) {
-        adminService.deleteRecipeById(id,currentUser);
+    public ResponseEntity<ApiResponse> deleteRecipe(@PathVariable Long id, @AuthenticationPrincipal User currentUser)
+    {
+        adminService.deleteRecipeById(id, currentUser);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse(ResponseMessage.DELETE_RECIPE.getMessage()));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/comments")
-    public ResponseEntity<List<CommentDto>> getAllComments(@AuthenticationPrincipal User currentUser
-    ) {
+    public ResponseEntity<List<CommentDto>> getAllComments(@AuthenticationPrincipal User currentUser) {
         return ResponseEntity.ok(adminService.getAllComments(currentUser));
     }
+
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/comments/{id}")
-    public ResponseEntity<ApiResponse> deleteComment(@PathVariable Long id,@AuthenticationPrincipal User currentUser) {
-        adminService.deleteCommentById(id,currentUser);
+    public ResponseEntity<ApiResponse> deleteComment(@PathVariable Long id, @AuthenticationPrincipal User currentUser)
+    {
+        adminService.deleteCommentById(id, currentUser);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse(ResponseMessage.DELETE_COMMENT.getMessage()));
-
     }
 
 }

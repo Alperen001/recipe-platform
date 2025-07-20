@@ -27,7 +27,6 @@ public interface RecipeService {
 
     List<RecipeDto> sortByTotalTime(String order);
 
-    List<RecipeDto> sortBy(String sortBy);
 
     RecipeDto deleteRecipe(Long id, User currentUser);
 

@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -20,12 +21,9 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-    private final CommentService commentService;
-    private final RecipeService recipeService;
-
 
     @PostMapping("/register")
-    public ResponseEntity <RegisterRequestDto> register(@RequestBody @Valid UserDto userDto) {
+    public ResponseEntity<RegisterRequestDto> register(@RequestBody @Valid UserDto userDto) {
         return ResponseEntity.ok(userService.register(userDto));
     }
 
@@ -34,42 +32,20 @@ public class UserController {
         return ResponseEntity.ok(userService.login(userDto));
     }
 
+    @PreAuthorize("#request.userId == authentication.principal.id")
     @PostMapping("/reset-password")
     public ResponseEntity<ApiResponse> resetPassword(@RequestBody @Valid ResetPasswordRequest request) {
         userService.resetPassword(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse(ResponseMessage.RESET_PASSWORD.getMessage()));
     }
-
-
-    @PostMapping("/{recipeId}/comment")
-    public ResponseEntity<CommentDto> addComment(@PathVariable Long recipeId,@RequestBody @Valid CommentDto comment,@AuthenticationPrincipal User currentUser) {
-        return ResponseEntity.ok(commentService.addCommentToRecipe(recipeId, currentUser, comment));
-    }
-
-    @GetMapping("/{id}/comments")
-    public ResponseEntity<List<CommentDto>> getComments(@PathVariable Long id) {
-        return ResponseEntity.ok(commentService.getCommentsForRecipe(id));
-    }
-
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/profile")
     public ResponseEntity<UserProfileDto> getProfile(@AuthenticationPrincipal User currentUser) {
         return ResponseEntity.ok(userService.getCurrentUserProfile(currentUser));
     }
-
-    @GetMapping("/{username}/recipes")
+    @GetMapping("/recipes/{username}")
     public ResponseEntity<List<RecipeDto>> getUserRecipes(@PathVariable String username) {
         return ResponseEntity.ok(userService.getRecipesByUsername(username));
     }
 
-    @DeleteMapping("/comments/{id}")
-    public ResponseEntity<ApiResponse> deleteComment(@PathVariable Long id,@AuthenticationPrincipal User currentUser) {
-        commentService.deleteComment(id, currentUser);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse(ResponseMessage.DELETE_COMMENT.getMessage()));
-    }
-
-    @DeleteMapping("/{id}/recipes")
-    public ResponseEntity<ApiResponse>  deleteRecipe(@PathVariable @Valid Long id, @AuthenticationPrincipal User currentUser) {
-        recipeService.deleteRecipe(id, currentUser);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse(ResponseMessage.DELETE_RECIPE.getMessage()));
-    }
 }

@@ -140,27 +140,6 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public List<RecipeDto> sortBy(String sortBy) {
-        Comparator<Recipe> comparator;
-        switch (sortBy.toLowerCase()) {
-            case "likes":
-                comparator = Comparator.comparingInt(r -> r.getLikes() != null ? r.getLikes() : 0);
-                comparator = comparator.reversed();
-                break;
-            case "createdat":
-                comparator = Comparator.comparing(r -> r.getCreatedAt() != null ? r.getCreatedAt() : new Date(0));
-                comparator = comparator.reversed();
-                break;
-            default:
-                throw new IllegalArgumentException("Geçersiz sıralama kriteri: " + sortBy);
-        }
-        return recipeRepo.findAll().stream()
-                .sorted(comparator)
-                .map(RecipeMapper::toDto)
-                .collect(Collectors.toList());
-    }
-
-    @Override
     public RecipeDto deleteRecipe(Long recipeId, User currentUser) {
         Recipe recipe = recipeRepo.findById(recipeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Tarif bulunamadı."));
