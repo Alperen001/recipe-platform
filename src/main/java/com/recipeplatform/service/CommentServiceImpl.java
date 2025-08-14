@@ -57,5 +57,11 @@ public class CommentServiceImpl implements CommentService {
     }
 
 
+    @Override
+    public boolean isCommentOwner(Long commentId, User currentUser) {
+        return commentRepo.findById(commentId)
+                .map(comment -> comment.getUser().getId().equals(currentUser.getId()))
+                .orElse(false);
+    }
 
 }

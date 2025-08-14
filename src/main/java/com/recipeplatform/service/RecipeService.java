@@ -27,9 +27,10 @@ public interface RecipeService {
 
     List<RecipeDto> sortByTotalTime(String order);
 
-
     RecipeDto deleteRecipe(Long id, User currentUser);
 
     RecipeDto updateRecipe(Long recipeId, RecipeDto recipeDto, User currentUser);
+
+    boolean isRecipeOwner(Long recipeId, User currentUser);
 
 }

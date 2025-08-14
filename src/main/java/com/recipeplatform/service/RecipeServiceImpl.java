@@ -163,4 +163,11 @@ public class RecipeServiceImpl implements RecipeService {
         Recipe saved = recipeRepo.save(recipe);
         return RecipeMapper.toDto(saved);
     }
+
+    @Override
+    public boolean isRecipeOwner(Long recipeId, User currentUser) {
+        return recipeRepo.findById(recipeId)
+                .map(recipe -> recipe.getId().equals(currentUser.getId()))
+                .orElse(false);
+    }
 }

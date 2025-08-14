@@ -26,7 +26,7 @@ public class RecipeController {
     private final RecipeService recipeService;
 
     @PreAuthorize("@recipeService.isRecipeOwner(#id, authentication.principal) or hasRole('ADMIN')")
-    @DeleteMapping("/recipes/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse> deleteRecipe(@PathVariable @Valid Long id,
                                                     @AuthenticationPrincipal User currentUser) {
         recipeService.deleteRecipe(id, currentUser);

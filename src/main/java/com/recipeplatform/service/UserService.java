@@ -16,5 +16,8 @@ public interface UserService {
     UserProfileDto getCurrentUserProfile(User currentUser);
 
     List<RecipeDto> getRecipesByUsername(String username);
+
+    void resetOwnPassword(ResetPasswordRequest request, User currentUser);
+
 }
 

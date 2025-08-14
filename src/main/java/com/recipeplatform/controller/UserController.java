@@ -32,18 +32,21 @@ public class UserController {
         return ResponseEntity.ok(userService.login(userDto));
     }
 
-    @PreAuthorize("#request.userId == authentication.principal.id")
+
     @PostMapping("/reset-password")
-    public ResponseEntity<ApiResponse> resetPassword(@RequestBody @Valid ResetPasswordRequest request) {
-        userService.resetPassword(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse(ResponseMessage.RESET_PASSWORD.getMessage()));
+    public ResponseEntity<ApiResponse> resetOwnPassword(@RequestBody @Valid ResetPasswordRequest request,
+                                                        @AuthenticationPrincipal User currentUser) {
+        userService.resetOwnPassword(request,currentUser);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ApiResponse(ResponseMessage.RESET_PASSWORD.getMessage()));
     }
+
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/profile")
     public ResponseEntity<UserProfileDto> getProfile(@AuthenticationPrincipal User currentUser) {
         return ResponseEntity.ok(userService.getCurrentUserProfile(currentUser));
     }
-    @GetMapping("/recipes/{username}")
+    @GetMapping("/{username}")
     public ResponseEntity<List<RecipeDto>> getUserRecipes(@PathVariable String username) {
         return ResponseEntity.ok(userService.getRecipesByUsername(username));
     }

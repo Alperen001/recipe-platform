@@ -22,18 +22,18 @@ public class CommentController {
     private final CommentService commentService;
 
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/comment/{recipeId}")
+    @PostMapping("/{recipeId}")
     public ResponseEntity<CommentDto> addComment(@PathVariable Long recipeId, @RequestBody @Valid CommentDto comment,@AuthenticationPrincipal User currentUser) {
         return ResponseEntity.ok(commentService.addCommentToRecipe(recipeId, currentUser, comment));
     }
 
-    @GetMapping("/comments/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<List<CommentDto>> getComments(@PathVariable Long id) {
         return ResponseEntity.ok(commentService.getCommentsForRecipe(id));
     }
 
     @PreAuthorize("@commentService.isCommentOwner(#id, authentication.principal) or hasRole('ADMIN')")
-    @DeleteMapping("/comments/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse> deleteComment(@PathVariable Long id,@AuthenticationPrincipal User currentUser) {
         commentService.deleteComment(id, currentUser);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse(ResponseMessage.DELETE_COMMENT.getMessage()));

@@ -5,6 +5,7 @@ import com.recipeplatform.dto.*;
 import com.recipeplatform.entity.Recipe;
 import com.recipeplatform.entity.User;
 import com.recipeplatform.enums.Role;
+import com.recipeplatform.exception.ResourceNotFoundException;
 import com.recipeplatform.mapping.RecipeMapper;
 import com.recipeplatform.mapping.UserMapper;
 import com.recipeplatform.repository.RecipeRepository;
@@ -84,6 +85,18 @@ public class UserServiceImpl implements UserService {
         return userRecipes.stream()
                 .map(recipe -> RecipeMapper.toDto(recipe, false))
                 .collect(Collectors.toList());
+    }
+    @Override
+    public void resetOwnPassword(ResetPasswordRequest request, User currentUser) {
+        if (!request.getEmail().equals(currentUser.getEmail())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Bu işlemi yapmaya yetkiniz yok.");
+        }
+
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new ResourceNotFoundException("Kullanıcı bulunamadı: " + request.getEmail()));
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
     }
 
 }

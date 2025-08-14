@@ -11,4 +11,6 @@ public interface CommentService {
     List<CommentDto> getCommentsForRecipe(Long recipeId);
 
     CommentDto deleteComment(Long id, User currentUser);
+
+    boolean isCommentOwner(Long commentId, User currentUser);
 }
