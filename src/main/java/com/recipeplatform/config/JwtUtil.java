@@ -49,13 +49,5 @@ public class JwtUtil {
                 .getExpiration();
         return expiration.before(new Date());
     }
-//
-//    public String extractRole(String token) {
-//        Claims claims = Jwts.parser()
-//                .setSigningKey(SECRET_KEY)
-//                .parseClaimsJws(token)
-//                .getBody();
-//        return claims.get("role", String.class);
-//    }
 
 }
